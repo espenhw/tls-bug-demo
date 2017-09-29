@@ -1,8 +1,7 @@
-FROM osixia/openldap:1.1.7
+FROM osixia/openldap:1.1.9
 
-ADD anonymous-bind.ldif /container/service/slapd/assets/anonymous-bind.ldif
-ADD data-people.ldif /container/service/slapd/assets/data-people.ldif
-ADD data-roles.ldif /container/service/slapd/assets/data-roles.ldif
+ADD data-people.ldif /container/service/slapd/assets/config/bootstrap/ldif/custom/98-people.ldif
+ADD data-roles.ldif /container/service/slapd/assets/config/bootstrap/ldif/custom/99-roles.ldif
 
 ADD certs/ca.crt /container/service/slapd/assets/certs/ca.crt
 ADD certs/ldap.crt /container/service/slapd/assets/certs/ldap.crt

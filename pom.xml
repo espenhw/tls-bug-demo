@@ -81,6 +81,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>-Djavax.net.ssl.trustStore=src/main/resources/truststore</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>

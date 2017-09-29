@@ -2,12 +2,15 @@ package org.tobsch;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.ldap.core.support.AbstractTlsDirContextAuthenticationStrategy;
+import org.springframework.ldap.core.support.DefaultTlsDirContextAuthenticationStrategy;
 import org.springframework.ldap.core.support.LdapContextSource;
-
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 
 @Configuration
@@ -30,12 +33,21 @@ public class AuthenticationManagerConfiguration extends GlobalAuthenticationConf
     public LdapContextSource contextSource() {
 
         LdapContextSource contextSource = new LdapContextSource();
-        contextSource.setUrl("ldap://ldap.example.org:389");
+        contextSource.setUrl("ldap://localhost:389");
         contextSource.setBase("dc=example,dc=org");
-        // contextSource.setAuthenticationStrategy(new DefaultTlsDirContextAuthenticationStrategy());
+        AbstractTlsDirContextAuthenticationStrategy strategy = new DefaultTlsDirContextAuthenticationStrategy();
+//        AbstractTlsDirContextAuthenticationStrategy strategy = new FixDefaultTlsDirContextAuthenticationStrategy();
+        strategy.setHostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String s, SSLSession sslSession) {
+                return true;
+            }
+        });
+        contextSource.setAuthenticationStrategy(strategy);
+        contextSource.setUserDn("cn=admin,dc=example,dc=org");
+        contextSource.setPassword("admin");
 
         // This implementation with reconnect works
-        contextSource.setAuthenticationStrategy(new FixDefaultTlsDirContextAuthenticationStrategy());
 
         return contextSource;
     }
